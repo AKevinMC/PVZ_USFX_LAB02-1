@@ -7,7 +7,7 @@
 #include "PVZ_USFX_LAB02GameMode.generated.h"
 
 class APotenciador;
-
+class APotEnergia;
 UCLASS(MinimalAPI)
 class APVZ_USFX_LAB02GameMode : public AGameModeBase
 {
@@ -16,6 +16,7 @@ class APVZ_USFX_LAB02GameMode : public AGameModeBase
 public:
 	APVZ_USFX_LAB02GameMode();
 
+	APotEnergia* newPotEnergia;
 	TArray<class AZombie*> ArrayZombies;
 	TArray<class APlant*> ArrayPlants;
 	//TMap<APotenciador*, int32> MapPotenciadores;
@@ -59,12 +60,14 @@ protected:
 
 	FTimerHandle TimerHandleTarjetasPlantaNuez;
 	FTimerHandle TimerHandlePotenciadoresAgua;
+	FTimerHandle TimerHandlePotenciadoresEnergia;
 	float IncrementarAguaCada = 20.0f;
 
 	void TimerCallBackPotenciadoresAgua();
 	void TimerCallBackTarjetasPlantaNuez();
 	void VisualizarPotenciadores();
 	void VisualizarTarjetasPlantas();
+	void TimerCallBackPotenciadoresEnergia();
 
 };
 

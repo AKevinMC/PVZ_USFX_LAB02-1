@@ -33,6 +33,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	float DamageGenerates = 10.0f;
+	//ver el health en el editor
+	UPROPERTY(VisibleAnywhere)
 	float Health = 500.0f;
 	float SpawnAfter = 0.0f;
 	float MovementSpeed = 6.1f;

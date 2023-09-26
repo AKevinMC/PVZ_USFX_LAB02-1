@@ -16,6 +16,8 @@
 #include "Girasol.h"
 #include "Nuez.h"
 #include "Hongo.h"
+#include "PotEnergia.h"
+#include "Kismet/GameplayStatics.h"
 
 APVZ_USFX_LAB02GameMode::APVZ_USFX_LAB02GameMode()
 {
@@ -54,6 +56,15 @@ APVZ_USFX_LAB02GameMode::APVZ_USFX_LAB02GameMode()
 void APVZ_USFX_LAB02GameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
+	UWorld* const World = GetWorld();
+		// spawn PotEnergia
+		World->GetTimerManager().SetTimer(TimerHandlePotenciadoresEnergia, this, &APVZ_USFX_LAB02GameMode::TimerCallBackPotenciadoresEnergia, 5.0f, true);
+	
+	
+
+	//*******************************
 
 	FTransform SpawnLocation;
 	SpawnLocation.SetLocation(FVector(-1500.0f, 1200.0f, 200.0f));
@@ -160,13 +171,13 @@ void APVZ_USFX_LAB02GameMode::BeginPlay()
 	MapPotenciadores.Add(TEXT("Regadera"), 0);
 	MapPotenciadores.Add(TEXT("Pala"), 5);
 
-	UWorld* const World = GetWorld();
-	if (World != nullptr)
-	{
-		// spawn the projectile
-		World->GetTimerManager().SetTimer(TimerHandleTarjetasPlantaNuez, this, &APVZ_USFX_LAB02GameMode::TimerCallBackTarjetasPlantaNuez, 15.0f);
+	//UWorld* const World = GetWorld();
+	//if (World != nullptr)
+	//{
+	//	// spawn the projectile
+	//	World->GetTimerManager().SetTimer(TimerHandleTarjetasPlantaNuez, this, &APVZ_USFX_LAB02GameMode::TimerCallBackTarjetasPlantaNuez, 15.0f);
 
-	}
+	//}
 
 }
 
@@ -174,6 +185,31 @@ void APVZ_USFX_LAB02GameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//detectar colisiones entre zombies y potEnergia y aumentar la energia del zombie
+	for (int i = 0; i < ArrayZombies.Num(); i++)
+	{
+		AActor* ActorToCheck = UGameplayStatics::GetActorOfClass(GetWorld(), APotEnergia::StaticClass());
+
+
+		//float distancia = FVector::Dist(ArrayZombies[i]->GetActorLocation(), newPotEnergia->GetActorLocation());
+		float distancia = ArrayZombies[i]->GetDistanceTo(newPotEnergia);
+		//float distancia = ArrayZombies[i]->GetActorLocation().Y - newPotEnergia->GetActorLocation().Y;
+		if (distancia <= 100 && ActorToCheck)
+		{
+			ArrayZombies[i]->Health += 10000.0f;
+		}
+	}
+	
+	//***********************************
+		/*for (int i = 0; i < ArrayZombies.Num(); i++)
+		{
+			if (ArrayZombies[i]->IsOverlappingActor(APotEnergia::StaticClass()))
+			{
+				ArrayZombies[i]->SetActorHiddenInGame(true);
+				ArrayZombies[i]->SetActorEnableCollision(false);
+				ArrayZombies[i]->SetCanMove(false);
+			}
+		}*/
 	//VisualizarTarjetasPlantas();
 
 	if (TiempoTrancurridoSiguienteTarjetaLanzaguisantes > 5.0f)
@@ -271,6 +307,16 @@ void APVZ_USFX_LAB02GameMode::VisualizarTarjetasPlantas() {
 	}
 }
 
+//************* SPAWN POTENERGIA *************//
+
+void APVZ_USFX_LAB02GameMode::TimerCallBackPotenciadoresEnergia()
+{
+	FVector randomLocation = FVector(FMath::RandRange(-900.0f, -1500.0f), FMath::RandRange(400.0f, 800.0f), 150.0f);
+	FTransform SpawnLocation;
+	SpawnLocation.SetLocation(randomLocation);
+	newPotEnergia = GetWorld()->SpawnActor<APotEnergia>(APotEnergia::StaticClass(), SpawnLocation);
+}
+
 
 //AZombie* APVZ_USFX_LAB02GameMode::SpawnZombie(FVector _spawnPosition)
 //{
@@ -332,3 +378,5 @@ void APVZ_USFX_LAB02GameMode::TimerCallBackTarjetasPlantaNuez()
 {
 	MapTarjetasPlantas[TEXT("Nuez")] += 1;
 }
+
+

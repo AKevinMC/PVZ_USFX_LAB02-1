@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Plant.h"
+#include "PotEnergia.h"
 
 
 // Sets default values
@@ -106,6 +107,9 @@ void AZombie::BeginPlay()
 void AZombie::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+	//*************************
 
 	/*if (Health <= 0.0f)
 	{
